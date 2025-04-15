@@ -23,12 +23,18 @@ public class AnaliseCreditoService {
 
     public void analisar(Proposta proposta) {
         try {
-            int pontos = calculoPontoList.stream().mapToInt(impl -> impl.calcular(proposta)).sum();
+            int pontos = calculoPontoList.stream()
+                    .mapToInt(impl -> impl.calcular(proposta))
+                    .sum();
+
             proposta.setAprovada(pontos > 350);
+
         } catch (StrategyException ex) {
             proposta.setAprovada(false);
             proposta.setObservacao(ex.getMessage());
         }
+
         notificacaoRabbitService.notificar(exchangePropostaConcluida, proposta);
     }
+
 }
